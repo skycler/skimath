@@ -68,10 +68,15 @@ export class Game {
     
     // Touch controls for mobile
     this.setupTouchControls();
+    
+    // Tilt controls for mobile (device orientation)
+    this.setupTiltControls();
   }
   
   private isTouchDevice: boolean = false;
   private touchControls: HTMLElement | null = null;
+  private tiltEnabled: boolean = false;
+  private tiltCalibration: number = 0; // Baseline tilt when game starts
   
   private setupTouchControls(): void {
     this.touchControls = document.getElementById('touch-controls');
@@ -109,6 +114,84 @@ export class Game {
     
     addControlEvents(touchLeft, 'ArrowLeft');
     addControlEvents(touchRight, 'ArrowRight');
+  }
+  
+  private setupTiltControls(): void {
+    // Check if device orientation is supported
+    if (!window.DeviceOrientationEvent) {
+      console.log('[Game] Device orientation not supported');
+      return;
+    }
+    
+    // For iOS 13+, we need to request permission
+    const requestPermission = (DeviceOrientationEvent as unknown as { requestPermission?: () => Promise<string> }).requestPermission;
+    
+    if (typeof requestPermission === 'function') {
+      // iOS 13+ requires user gesture to request permission
+      // Add a one-time click listener to request permission
+      const requestTiltPermission = async () => {
+        try {
+          const permission = await requestPermission();
+          if (permission === 'granted') {
+            this.enableTiltControls();
+            console.log('[Game] Tilt controls enabled (iOS)');
+          }
+        } catch (error) {
+          console.warn('[Game] Tilt permission denied:', error);
+        }
+        document.removeEventListener('click', requestTiltPermission);
+      };
+      document.addEventListener('click', requestTiltPermission, { once: true });
+    } else {
+      // Non-iOS devices - just enable directly
+      this.enableTiltControls();
+    }
+  }
+  
+  private enableTiltControls(): void {
+    this.tiltEnabled = true;
+    
+    window.addEventListener('deviceorientation', (event) => {
+      if (!this.tiltEnabled || this.gameState !== GameState.PLAYING || this.isPaused) {
+        return;
+      }
+      
+      // gamma is left/right tilt (-90 to 90 degrees)
+      const gamma = event.gamma || 0;
+      
+      // Apply calibration offset
+      const tilt = gamma - this.tiltCalibration;
+      
+      // Dead zone of ±5 degrees to prevent drift
+      const deadZone = 5;
+      
+      if (Math.abs(tilt) < deadZone) {
+        // In dead zone - release both keys
+        this.player.handleKeyUp('ArrowLeft');
+        this.player.handleKeyUp('ArrowRight');
+      } else if (tilt < -deadZone) {
+        // Tilting left
+        this.player.handleKeyDown('ArrowLeft');
+        this.player.handleKeyUp('ArrowRight');
+      } else if (tilt > deadZone) {
+        // Tilting right
+        this.player.handleKeyDown('ArrowRight');
+        this.player.handleKeyUp('ArrowLeft');
+      }
+    });
+  }
+  
+  private calibrateTilt(): void {
+    // Set current tilt as the neutral position
+    // This is called when the game starts
+    if (this.tiltEnabled && window.DeviceOrientationEvent) {
+      const calibrate = (event: DeviceOrientationEvent) => {
+        this.tiltCalibration = event.gamma || 0;
+        console.log('[Game] Tilt calibrated to:', this.tiltCalibration);
+        window.removeEventListener('deviceorientation', calibrate);
+      };
+      window.addEventListener('deviceorientation', calibrate, { once: true });
+    }
   }
   
   private showTouchControls(): void {
@@ -155,6 +238,9 @@ export class Game {
     
     // Show touch controls for mobile
     this.showTouchControls();
+    
+    // Calibrate tilt controls (set current tilt as neutral)
+    this.calibrateTilt();
   }
   
   pauseGame(): void {
