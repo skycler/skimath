@@ -11,11 +11,11 @@ import { terrainGenerator } from '../utils/TerrainGenerator';
 
 export const PLAYER = {
   /** Base forward speed */
-  BASE_SPEED: 0.08,
+  BASE_SPEED: 0.05,
   /** Downhill gravity acceleration */
-  GRAVITY: 0.008,
+  GRAVITY: 0.005,
   /** Maximum downhill velocity */
-  MAX_SPEED: 0.6,
+  MAX_SPEED: 0.4,
   /** Collision radius for obstacles */
   COLLISION_RADIUS: 1,
   /** Starting position */
