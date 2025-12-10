@@ -65,6 +65,51 @@ export class Game {
         this.player.handleKeyUp(e.code);
       }
     });
+    
+    // Touch controls for mobile
+    this.setupTouchControls();
+  }
+  
+  private setupTouchControls(): void {
+    const touchControls = document.getElementById('touch-controls');
+    const touchLeft = document.getElementById('touch-left');
+    const touchRight = document.getElementById('touch-right');
+    const touchStart = document.getElementById('touch-start');
+    
+    // Show touch controls on touch devices
+    if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
+      touchControls?.classList.remove('hidden');
+    }
+    
+    // Helper to handle both touch and mouse events
+    const addControlEvents = (element: HTMLElement | null, keyCode: string) => {
+      if (!element) return;
+      
+      const handleStart = (e: Event) => {
+        e.preventDefault();
+        if (this.gameState === GameState.PLAYING) {
+          this.player.handleKeyDown(keyCode);
+        }
+      };
+      
+      const handleEnd = (e: Event) => {
+        e.preventDefault();
+        if (this.gameState === GameState.PLAYING) {
+          this.player.handleKeyUp(keyCode);
+        }
+      };
+      
+      element.addEventListener('touchstart', handleStart, { passive: false });
+      element.addEventListener('touchend', handleEnd, { passive: false });
+      element.addEventListener('touchcancel', handleEnd, { passive: false });
+      element.addEventListener('mousedown', handleStart);
+      element.addEventListener('mouseup', handleEnd);
+      element.addEventListener('mouseleave', handleEnd);
+    };
+    
+    addControlEvents(touchLeft, 'ArrowLeft');
+    addControlEvents(touchRight, 'ArrowRight');
+    addControlEvents(touchStart, 'ArrowUp');
   }
   
   startGame(difficulty: Difficulty, playerName: string = 'Skier'): void {

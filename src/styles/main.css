@@ -302,6 +302,70 @@ body {
   75% { transform: translateX(10px); }
 }
 
+/* Touch Controls */
+#touch-controls {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  pointer-events: none;
+}
+
+#touch-controls.hidden {
+  display: none;
+}
+
+.touch-btn {
+  pointer-events: auto;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 3px solid rgba(255, 255, 255, 0.5);
+  background: rgba(0, 0, 0, 0.4);
+  color: white;
+  font-size: 28px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  transition: transform 0.1s, background 0.1s;
+}
+
+.touch-btn:active {
+  transform: scale(0.9);
+  background: rgba(78, 205, 196, 0.6);
+}
+
+.touch-left {
+  margin-left: 20px;
+}
+
+.touch-right {
+  margin-right: 20px;
+}
+
+.touch-start {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 60px;
+  border-radius: 30px;
+  font-size: 16px;
+}
+
+.touch-start:active {
+  transform: translateX(-50%) scale(0.95);
+}
+
 /* Responsive */
 @media (max-width: 600px) {
   #start-screen, #end-screen, #question-modal {
@@ -317,5 +381,20 @@ body {
   .answer-btn {
     padding: 15px 25px;
     font-size: 18px;
+  }
+  
+  #score-panel {
+    top: 10px;
+    left: 10px;
+    padding: 10px 15px;
+    gap: 12px;
+  }
+  
+  .score-item span:not(.label) {
+    font-size: 18px;
+  }
+  
+  .score-item .label {
+    font-size: 10px;
   }
 }

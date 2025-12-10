@@ -2,7 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>SkiMath - Multiplication Practice Game</title>
   <link rel="stylesheet" href="/src/styles/main.css">
 </head>
@@ -70,6 +72,13 @@
         </div>
         <div id="achievements"></div>
         <button id="restart-button">Race Again</button>
+      </div>
+      
+      <!-- Touch Controls (visible on mobile) -->
+      <div id="touch-controls" class="hidden">
+        <button id="touch-left" class="touch-btn touch-left">◀</button>
+        <button id="touch-right" class="touch-btn touch-right">▶</button>
+        <button id="touch-start" class="touch-btn touch-start">▲ GO</button>
       </div>
     </div>
   </div>
