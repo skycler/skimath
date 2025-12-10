@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SkiMath - Multiplication Practice Game</title>
+  <link rel="stylesheet" href="/src/styles/main.css">
+</head>
+<body>
+  <div id="game-container">
+    <canvas id="game-canvas"></canvas>
+    
+    <!-- UI Overlay -->
+    <div id="ui-overlay">
+      <!-- Score Display -->
+      <div id="score-panel">
+        <div class="score-item">
+          <span class="label">Score</span>
+          <span id="score-value">0</span>
+        </div>
+        <div class="score-item">
+          <span class="label">Time</span>
+          <span id="timer-value">0:00</span>
+        </div>
+        <div class="score-item">
+          <span class="label">Gates</span>
+          <span id="gates-value">0/10</span>
+        </div>
+        <button id="mute-button" title="Toggle Sound">🔊</button>
+      </div>
+      
+      <!-- Question Modal -->
+      <div id="question-modal" class="hidden">
+        <div class="question-content">
+          <h2 id="question-text">7 × 8 = ?</h2>
+          <div id="answer-choices">
+            <!-- Answer buttons will be generated dynamically -->
+          </div>
+          <div id="feedback" class="hidden"></div>
+        </div>
+      </div>
+      
+      <!-- Start Screen -->
+      <div id="start-screen">
+        <h1>🎿 SkiMath</h1>
+        <p>Master multiplication while racing down the slopes!</p>
+        <div class="name-input">
+          <label for="player-name">Your Name:</label>
+          <input type="text" id="player-name" placeholder="Skier" maxlength="20">
+        </div>
+        <div class="difficulty-select">
+          <label>Difficulty:</label>
+          <select id="difficulty-select">
+            <option value="easy">Easy (1-5)</option>
+            <option value="medium" selected>Medium (1-10)</option>
+            <option value="hard">Hard (1-12)</option>
+            <option value="expert">Expert (10-20)</option>
+          </select>
+        </div>
+        <button id="start-button">Start Race</button>
+      </div>
+      
+      <!-- End Screen -->
+      <div id="end-screen" class="hidden">
+        <h1>🏁 <span id="player-finish-name">Skier</span> Finished!</h1>
+        <div id="final-stats">
+          <p>Final Score: <span id="final-score">0</span></p>
+          <p>Time: <span id="final-time">0:00</span></p>
+          <p>Accuracy: <span id="final-accuracy">0%</span></p>
+        </div>
+        <div id="achievements"></div>
+        <button id="restart-button">Race Again</button>
+      </div>
+    </div>
+  </div>
+  
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>
