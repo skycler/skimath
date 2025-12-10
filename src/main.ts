@@ -1,7 +1,7 @@
 import { Game } from './game/Game';
 
 // Initialize the game when DOM is ready
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   const canvas = document.getElementById('game-canvas') as HTMLCanvasElement;
   
   if (!canvas) {
@@ -10,5 +10,5 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   
   const game = new Game(canvas);
-  game.init();
+  await game.init();
 });

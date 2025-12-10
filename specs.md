@@ -98,14 +98,33 @@ The skier uses **rotation-based steering** for realistic carving:
 ## Player Character
 
 ### Realistic Skier Model
-- **Racing suit**: Red jacket with navy pants, racing number bib
-- **Safety gear**: Full-coverage helmet with orange-tinted goggles
-- **Skiing stance**: Authentic crouch position, leaning forward
+The game supports loading **3D GLTF/GLB models** for the skier character:
+
+- **Default model**: Poly Pizza low-poly skier with racing gear
+- **Custom models**: Place any GLTF/GLB at `/public/models/skier.glb`
+- **Auto-scaling**: Models automatically scaled to ~3 units tall
+- **Auto-positioning**: Feet placed at ground level regardless of model origin
+- **Fallback**: Simple procedural mesh if no model loads
+
+#### Skier Appearance (Default Model)
+- **Racing suit**: Purple/gray jumpsuit with racing number bib (#7)
+- **Safety gear**: Green helmet with orange-tinted goggles
 - **Equipment**:
-  - Modern shaped skis with curved profile and bindings
-  - Carbon fiber poles with grips, baskets, and tips
-  - Ski boots with buckle details
-- **Animation**: Skier leans into turns (left/right tilt)
+  - Black shaped skis with bindings
+  - Orange/red ski poles with grips
+  - Ski boots
+- **Pose**: Athletic skiing crouch position
+
+#### Visual Feedback
+- **Rotation**: Skier rotates Y-axis to face direction of travel
+- **Lean**: Skier tilts into turns (Z-axis rotation, 0.8× turn angle)
+- **Wrapper system**: Model wrapped in parent group for clean rotation handling
+
+#### Adding Custom Characters (Mixamo)
+1. Download character from [Mixamo](https://www.mixamo.com/) (free)
+2. Convert FBX to GLB using Blender
+3. Place as `/public/models/skier.glb`
+4. Game auto-detects and loads animations if present
 
 ### Camera
 - Close third-person view behind skier

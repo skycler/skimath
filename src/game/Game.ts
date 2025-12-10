@@ -37,9 +37,9 @@ export class Game {
     this.uiManager = new UIManager(this);
   }
   
-  init(): void {
+  async init(): Promise<void> {
     this.sceneManager.init();
-    this.player.init();
+    await this.player.init(); // Async to load GLTF model
     // Pass obstacle manager to gate manager so gates avoid obstacles
     this.gateManager.setObstacleManager(this.sceneManager.obstacleManager);
     this.gateManager.init();

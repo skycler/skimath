@@ -63,7 +63,7 @@ export class SkierController {
     );
     this.velocity.set(0, 0, 0);
     this.mesh.position.copy(this._position);
-    this.mesh.rotation.set(0, Math.PI, 0); // Face downhill
+    this.mesh.rotation.set(0, 0, 0); // Wrapper starts at 0, model inside faces downhill
     this.moveLeft = false;
     this.moveRight = false;
     this.moveForward = false;
@@ -246,11 +246,11 @@ export class SkierController {
     
     // === VISUAL ROTATION ===
     // Rotate skier model to face direction of travel
-    // Math.PI is straight downhill, add turn angle for visual rotation
-    this.mesh.rotation.y = Math.PI + this.turnAngle;
+    // The model/wrapper already faces downhill, just add turn angle
+    this.mesh.rotation.y = this.turnAngle;
     
-    // Tilt skier into the turn (lean into carve) - set directly, no lerp for stability
-    this.mesh.rotation.z = -this.turnAngle * 0.5;
+    // Tilt skier into the turn (lean into carve) - positive for correct direction
+    this.mesh.rotation.z = this.turnAngle * 0.8;
   }
 
   /**

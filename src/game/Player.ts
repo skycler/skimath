@@ -1,30 +1,69 @@
 import * as THREE from 'three';
 import { SkierModel } from './SkierModel';
 import { SkierController } from './SkierController';
+import { AnimatedSkier } from './AnimatedSkier';
 
 /**
  * Player - Facade class that composes SkierModel and SkierController
  * Provides a unified interface for the game to interact with the player
+ * 
+ * Supports both:
+ * - Procedural mesh (SkierModel) - always works, no external files needed
+ * - Animated GLTF model (AnimatedSkier) - better visuals if model file exists
  */
 export class Player {
   private scene: THREE.Scene;
-  private model: SkierModel;
-  private controller: SkierController;
-  private mesh: THREE.Group;
+  private model: SkierModel | null = null;
+  private animatedSkier: AnimatedSkier | null = null;
+  private controller!: SkierController;
+  private mesh!: THREE.Group;
+  private useAnimatedModel: boolean = false;
 
   constructor(scene: THREE.Scene) {
     this.scene = scene;
-    this.model = new SkierModel();
-    this.mesh = this.model.create();
-    this.controller = new SkierController(this.mesh);
+    // Don't create mesh in constructor - wait for init() to try GLTF first
   }
 
   /**
    * Initialize the player and add to scene
+   * Attempts to load animated GLTF model, falls back to procedural mesh
    */
-  init(): void {
+  async init(): Promise<void> {
+    console.log('[Player] Starting init...');
+    
+    // Try to load animated model first
+    this.animatedSkier = new AnimatedSkier();
+    // Use Vite's base URL for correct path resolution
+    const modelPath = `${import.meta.env.BASE_URL}models/skier.glb`;
+    console.log('[Player] Attempting to load GLTF model from:', modelPath);
+    const loaded = await this.animatedSkier.load(modelPath);
+    
+    if (loaded) {
+      // Use the animated model
+      this.mesh = this.animatedSkier.getMesh();
+      this.useAnimatedModel = true;
+      console.log('[Player] ✓ Using animated GLTF skier model');
+      console.log('[Player] Mesh children count:', this.mesh.children.length);
+      this.mesh.traverse((child) => {
+        if (child instanceof THREE.Mesh) {
+          console.log('[Player] - Mesh:', child.name || '(unnamed)', 'geometry:', child.geometry.type);
+        }
+      });
+    } else {
+      // Fall back to procedural mesh
+      console.log('[Player] ✗ GLTF failed to load, creating procedural mesh');
+      this.model = new SkierModel();
+      this.mesh = this.model.create();
+      this.useAnimatedModel = false;
+      console.log('[Player] Using procedural skier model');
+    }
+    
+    console.log('[Player] Adding mesh to scene. Scene children before:', this.scene.children.length);
+    this.controller = new SkierController(this.mesh);
     this.scene.add(this.mesh);
+    console.log('[Player] Scene children after:', this.scene.children.length);
     this.reset();
+    console.log('[Player] Init complete');
   }
 
   /**
@@ -60,6 +99,11 @@ export class Player {
    */
   update(): void {
     this.controller.update();
+    
+    // Update animation mixer if using animated model
+    if (this.animatedSkier && this.useAnimatedModel) {
+      this.animatedSkier.update();
+    }
   }
 
   /**

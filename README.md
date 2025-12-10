@@ -81,6 +81,50 @@ docker run -p 3000:3000 skimath
 - **Vite** - Fast build tool
 - **Docker** - Containerized deployment
 
+## Custom 3D Character (Mixamo)
+
+The game supports loading animated 3D characters from [Mixamo](https://www.mixamo.com/). To use a custom character:
+
+### 1. Get a Character from Mixamo
+
+1. Go to [Mixamo](https://www.mixamo.com/) and sign in (free Adobe account)
+2. Choose a character from the Characters tab
+3. Select animations (e.g., "Running", "Idle", "Falling")
+4. Download with these settings:
+   - **Format**: FBX for Unity (.fbx)
+   - **Skin**: With Skin
+   - **Frames per Second**: 30
+   - **Keyframe Reduction**: none
+
+### 2. Convert to GLB Format
+
+Use Blender (free) to convert:
+
+1. Open Blender and delete the default cube
+2. File → Import → FBX (.fbx) and import your character
+3. Import additional FBX files for more animations
+4. In the NLA Editor, combine all animations
+5. File → Export → glTF 2.0 (.glb/.gltf)
+6. Export settings:
+   - **Format**: glTF Binary (.glb)
+   - **Include**: Selected Objects
+   - **Data**: ✓ Animations
+
+### 3. Add to Project
+
+1. Name your file `skier.glb`
+2. Place it in `public/models/skier.glb`
+3. The game will automatically load it on next run
+
+### Animation Names
+
+The game looks for these animation names (case-insensitive):
+- `ski` or `skiing` - Main skiing animation
+- `crash` or `fall` - Crash animation
+- Any other animation will be used as fallback
+
+If no model is found, the game uses a simple procedural mesh.
+
 ## Project Structure
 
 ```
