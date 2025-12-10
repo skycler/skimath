@@ -44,11 +44,21 @@ This specification outlines a gamification approach to help users practice multi
 - **Expert**: Numbers 10-20
 
 ### Controls
-- **↑ / W**: Start race (first press) / Speed up
+
+#### Keyboard
+- **Any key**: Start race (first press)
+- **↑ / W**: Speed up
 - **← / A**: Rotate skier left (carve left turn)
 - **→ / D**: Rotate skier right (carve right turn)
 - **↓ / S**: Brake/slow down (snow plow)
 - Movement is mutually exclusive (left cancels right) to prevent stuck keys
+
+#### Touch Controls (Mobile/iPhone)
+- **◀ Left button**: Rotate skier left (vertically centered, left side)
+- **▶ Right button**: Rotate skier right (vertically centered, right side)
+- **▲ GO button**: Start/accelerate (vertically centered, middle)
+- Touch controls auto-appear on touch-enabled devices
+- Buttons are large (90px) and clearly visible for easy tapping
 
 ### Transversal Skiing Physics
 The skier uses **rotation-based steering** for realistic carving:
@@ -276,11 +286,22 @@ npm run preview
 docker-compose up --build
 ```
 
+#### GitHub Pages Deployment
+The game is deployed automatically to GitHub Pages on push to `main`:
+- **Live URL**: `https://skycler.github.io/skimath/`
+- Auto-deploy via GitHub Actions workflow (`.github/workflows/deploy.yml`)
+- Static site build with Vite, base path set to `/skimath/`
+
+### Mobile Support
+- **iOS Safari**: Full support with touch controls
+- **Add to Home Screen**: Works as a web app (PWA-like experience)
+- Viewport optimized for mobile (no pinch-to-zoom during gameplay)
+
 ## Future Enhancements (Not Yet Implemented)
 - Leaderboard with persistent scores
 - ~~Additional operations (division, addition, subtraction)~~ ✅ Interface ready via `IQuestionGenerator`
 - ~~More course variations~~ ✅ Interface ready via `ICourseGenerator`
-- Mobile touch controls
+- ~~Mobile touch controls~~ ✅ Implemented
 - Multiplayer mode
 
 ## Audio System (Implemented)

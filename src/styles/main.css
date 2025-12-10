@@ -305,13 +305,14 @@ body {
 /* Touch Controls */
 #touch-controls {
   position: absolute;
-  bottom: 0;
+  top: 50%;
   left: 0;
   right: 0;
+  transform: translateY(-50%);
   padding: 20px;
   display: flex;
   justify-content: space-between;
-  align-items: flex-end;
+  align-items: center;
   pointer-events: none;
 }
 
@@ -321,13 +322,13 @@ body {
 
 .touch-btn {
   pointer-events: auto;
-  width: 80px;
-  height: 80px;
+  width: 90px;
+  height: 90px;
   border-radius: 50%;
-  border: 3px solid rgba(255, 255, 255, 0.5);
-  background: rgba(0, 0, 0, 0.4);
+  border: 3px solid rgba(255, 255, 255, 0.7);
+  background: rgba(0, 0, 0, 0.5);
   color: white;
-  font-size: 28px;
+  font-size: 32px;
   font-weight: bold;
   display: flex;
   align-items: center;
@@ -344,26 +345,22 @@ body {
 }
 
 .touch-left {
-  margin-left: 20px;
+  margin-left: 15px;
 }
 
 .touch-right {
-  margin-right: 20px;
+  margin-right: 15px;
 }
 
 .touch-start {
-  position: absolute;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100px;
-  height: 60px;
-  border-radius: 30px;
-  font-size: 16px;
+  width: 110px;
+  height: 70px;
+  border-radius: 35px;
+  font-size: 18px;
 }
 
 .touch-start:active {
-  transform: translateX(-50%) scale(0.95);
+  transform: scale(0.95);
 }
 
 /* Responsive */

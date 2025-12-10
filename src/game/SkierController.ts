@@ -80,6 +80,9 @@ export class SkierController {
    * Handle key down events
    */
   handleKeyDown(code: string): void {
+    // Any key press starts the race
+    this.hasStarted = true;
+    
     switch (code) {
       case 'ArrowLeft':
       case 'KeyA':
@@ -95,7 +98,6 @@ export class SkierController {
       case 'KeyW':
         this.moveForward = true;
         this.moveBackward = false;
-        this.hasStarted = true; // Start the race!
         break;
       case 'ArrowDown':
       case 'KeyS':
