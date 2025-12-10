@@ -4,16 +4,29 @@
   box-sizing: border-box;
 }
 
+html {
+  /* Support for iPhone notch/safe areas */
+  height: 100%;
+  height: -webkit-fill-available;
+}
+
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   overflow: hidden;
   background: #1a1a2e;
+  min-height: 100vh;
+  min-height: -webkit-fill-available;
+  /* Prevent pull-to-refresh on iOS */
+  overscroll-behavior: none;
 }
 
 #game-container {
   width: 100vw;
   height: 100vh;
+  height: -webkit-fill-available;
   position: relative;
+  /* Handle safe areas for notched iPhones */
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
 }
 
 #game-canvas {

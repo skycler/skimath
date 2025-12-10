@@ -298,7 +298,17 @@ The game is deployed automatically to GitHub Pages on push to `main`:
 
 ### Mobile Support
 - **iOS Safari**: Full support with touch controls
-- **Add to Home Screen**: Works as a web app (PWA-like experience)
+- **Add to Home Screen**: Works as a fullscreen web app (PWA-like experience)
+  1. Open game in Safari
+  2. Tap Share button (⬆️)
+  3. Tap "Add to Home Screen"
+  4. Open from home screen → runs fullscreen without browser UI
+- **Fullscreen optimizations**:
+  - `apple-mobile-web-app-capable` for iOS standalone mode
+  - `viewport-fit=cover` for edge-to-edge display
+  - Safe area insets for iPhone notch/home indicator
+  - Pull-to-refresh disabled during gameplay
+  - Theme color matches game background
 - Viewport optimized for mobile (no pinch-to-zoom during gameplay)
 
 ## Future Enhancements (Not Yet Implemented)
