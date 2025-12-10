@@ -54,10 +54,14 @@ This specification outlines a gamification approach to help users practice multi
 - Movement is mutually exclusive (left cancels right) to prevent stuck keys
 
 #### Touch Controls (Mobile/iPhone)
-- **◀ Left button**: Rotate skier left (vertically centered, left side)
-- **▶ Right button**: Rotate skier right (vertically centered, right side)
-- **▲ GO button**: Start/accelerate (vertically centered, middle)
-- Touch controls auto-appear on touch-enabled devices
+- **◀ Left button**: Rotate skier left (vertically centered, left side of screen)
+- **▶ Right button**: Rotate skier right (vertically centered, right side of screen)
+- Touch controls **only visible while actively skiing**:
+  - Hidden on start screen
+  - Shown during gameplay
+  - Hidden during math questions
+  - Hidden on end screen
+- Auto-appear on touch-enabled devices
 - Buttons are large (90px) and clearly visible for easy tapping
 
 ### Transversal Skiing Physics

@@ -352,17 +352,6 @@ body {
   margin-right: 15px;
 }
 
-.touch-start {
-  width: 110px;
-  height: 70px;
-  border-radius: 35px;
-  font-size: 18px;
-}
-
-.touch-start:active {
-  transform: scale(0.95);
-}
-
 /* Responsive */
 @media (max-width: 600px) {
   #start-screen, #end-screen, #question-modal {

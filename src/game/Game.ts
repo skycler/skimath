@@ -70,16 +70,16 @@ export class Game {
     this.setupTouchControls();
   }
   
+  private isTouchDevice: boolean = false;
+  private touchControls: HTMLElement | null = null;
+  
   private setupTouchControls(): void {
-    const touchControls = document.getElementById('touch-controls');
+    this.touchControls = document.getElementById('touch-controls');
     const touchLeft = document.getElementById('touch-left');
     const touchRight = document.getElementById('touch-right');
-    const touchStart = document.getElementById('touch-start');
     
-    // Show touch controls on touch devices
-    if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
-      touchControls?.classList.remove('hidden');
-    }
+    // Detect touch device
+    this.isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
     
     // Helper to handle both touch and mouse events
     const addControlEvents = (element: HTMLElement | null, keyCode: string) => {
@@ -87,7 +87,7 @@ export class Game {
       
       const handleStart = (e: Event) => {
         e.preventDefault();
-        if (this.gameState === GameState.PLAYING) {
+        if (this.gameState === GameState.PLAYING && !this.isPaused) {
           this.player.handleKeyDown(keyCode);
         }
       };
@@ -109,7 +109,18 @@ export class Game {
     
     addControlEvents(touchLeft, 'ArrowLeft');
     addControlEvents(touchRight, 'ArrowRight');
-    addControlEvents(touchStart, 'ArrowUp');
+  }
+  
+  private showTouchControls(): void {
+    if (this.isTouchDevice && this.touchControls) {
+      this.touchControls.classList.remove('hidden');
+    }
+  }
+  
+  private hideTouchControls(): void {
+    if (this.touchControls) {
+      this.touchControls.classList.add('hidden');
+    }
   }
   
   startGame(difficulty: Difficulty, playerName: string = 'Skier'): void {
@@ -141,6 +152,9 @@ export class Game {
     this.uiManager.hideStartScreen();
     this.uiManager.updateScore(this.score);
     this.uiManager.updateGates(0, this.gateManager.totalGates);
+    
+    // Show touch controls for mobile
+    this.showTouchControls();
   }
   
   pauseGame(): void {
@@ -151,6 +165,9 @@ export class Game {
     // Silence carving sound while paused (skiing ambient sound continues)
     this.audioManager.updateCarvingSound(false, 0);
     
+    // Hide touch controls during question
+    this.hideTouchControls();
+    
     gameEvents.emit(GameEventType.GAME_PAUSED);
   }
   
@@ -158,11 +175,17 @@ export class Game {
     this.isPaused = false;
     this.gameState = GameState.PLAYING;
     
+    // Show touch controls again
+    this.showTouchControls();
+    
     gameEvents.emit(GameEventType.GAME_RESUMED);
   }
   
   endGame(): void {
     this.gameState = GameState.ENDED;
+    
+    // Hide touch controls
+    this.hideTouchControls();
     
     // Stop skiing sound and play finish fanfare
     this.audioManager.stopSkiingSound();
