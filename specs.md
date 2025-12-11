@@ -64,6 +64,18 @@ This specification outlines a gamification approach to help users practice multi
 - Auto-appear on touch-enabled devices
 - Buttons are large (90px) and clearly visible for easy tapping
 
+#### Tilt Controls (Mobile/iPhone)
+- **Device orientation** controls steering by tilting the phone left/right
+- Works in **both portrait and landscape** orientations:
+  - Portrait: Uses `gamma` axis (left/right tilt)
+  - Landscape: Uses `beta` axis (adjusted for screen rotation)
+  - Automatically detects landscape-left vs landscape-right
+- **Calibration**: When game starts, current tilt becomes neutral position
+- **Dead zone**: ±5° to prevent accidental steering from small movements
+- **Auto-recalibrate**: If orientation changes during gameplay, controls recalibrate
+- **iOS 13+ support**: Requests motion permission on first tap (required by Apple)
+- Works alongside touch buttons - use whichever method you prefer
+
 ### Transversal Skiing Physics
 The skier uses **rotation-based steering** for realistic carving:
 

@@ -148,19 +148,88 @@ export class Game {
     }
   }
   
+  private getScreenOrientation(): 'portrait' | 'landscape' {
+    // Use screen.orientation API if available, fallback to window dimensions
+    if (screen.orientation) {
+      return screen.orientation.type.includes('portrait') ? 'portrait' : 'landscape';
+    }
+    // Fallback: compare window dimensions
+    return window.innerHeight > window.innerWidth ? 'portrait' : 'landscape';
+  }
+  
+  private lastOrientation: 'portrait' | 'landscape' = 'portrait';
+  
   private enableTiltControls(): void {
     this.tiltEnabled = true;
+    this.lastOrientation = this.getScreenOrientation();
+    
+    // Listen for orientation changes to recalibrate
+    window.addEventListener('orientationchange', () => {
+      // Small delay to let the orientation settle
+      setTimeout(() => {
+        const newOrientation = this.getScreenOrientation();
+        if (newOrientation !== this.lastOrientation) {
+          this.lastOrientation = newOrientation;
+          console.log('[Game] Orientation changed to:', newOrientation);
+          // Recalibrate with the new orientation
+          if (this.gameState === GameState.PLAYING) {
+            this.calibrateTilt();
+          }
+        }
+      }, 100);
+    });
+    
+    // Also listen on screen.orientation for more reliable detection
+    if (screen.orientation) {
+      screen.orientation.addEventListener('change', () => {
+        setTimeout(() => {
+          const newOrientation = this.getScreenOrientation();
+          if (newOrientation !== this.lastOrientation) {
+            this.lastOrientation = newOrientation;
+            console.log('[Game] Screen orientation changed to:', newOrientation);
+            if (this.gameState === GameState.PLAYING) {
+              this.calibrateTilt();
+            }
+          }
+        }, 100);
+      });
+    }
     
     window.addEventListener('deviceorientation', (event) => {
       if (!this.tiltEnabled || this.gameState !== GameState.PLAYING || this.isPaused) {
         return;
       }
       
-      // gamma is left/right tilt (-90 to 90 degrees)
-      const gamma = event.gamma || 0;
+      // Get the appropriate tilt axis based on orientation
+      // Portrait: gamma is left/right tilt
+      // Landscape: beta is left/right tilt (gamma becomes front/back)
+      const orientation = this.getScreenOrientation();
+      let rawTilt: number;
+      
+      if (orientation === 'portrait') {
+        // Portrait mode: gamma = left/right tilt (-90 to 90)
+        rawTilt = event.gamma || 0;
+      } else {
+        // Landscape mode: beta = left/right tilt (-180 to 180)
+        // In landscape-left, tilting device left = negative beta
+        // In landscape-right, it's inverted
+        const beta = event.beta || 0;
+        
+        // Detect landscape-left vs landscape-right
+        // screen.orientation.angle: 90 = landscape-left, -90/270 = landscape-right
+        const angle = screen.orientation?.angle ?? 0;
+        
+        if (angle === 90) {
+          // Landscape-left (home button on right)
+          rawTilt = -beta;
+        } else {
+          // Landscape-right (home button on left) or unknown
+          rawTilt = beta;
+        }
+      }
       
       // Apply calibration offset
-      const tilt = gamma - this.tiltCalibration;
+      const tilt = rawTilt - this.tiltCalibration;
       
       // Dead zone of ±5 degrees to prevent drift
       const deadZone = 5;
@@ -185,9 +254,16 @@ export class Game {
     // Set current tilt as the neutral position
     // This is called when the game starts
     if (this.tiltEnabled && window.DeviceOrientationEvent) {
+      const orientation = this.getScreenOrientation();
       const calibrate = (event: DeviceOrientationEvent) => {
-        this.tiltCalibration = event.gamma || 0;
-        console.log('[Game] Tilt calibrated to:', this.tiltCalibration);
+        if (orientation === 'portrait') {
+          this.tiltCalibration = event.gamma || 0;
+        } else {
+          const beta = event.beta || 0;
+          const angle = screen.orientation?.angle ?? 0;
+          this.tiltCalibration = angle === 90 ? -beta : beta;
+        }
+        console.log('[Game] Tilt calibrated to:', this.tiltCalibration, 'orientation:', orientation);
         window.removeEventListener('deviceorientation', calibrate);
       };
       window.addEventListener('deviceorientation', calibrate, { once: true });
